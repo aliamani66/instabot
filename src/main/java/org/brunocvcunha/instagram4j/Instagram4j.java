@@ -267,7 +267,7 @@ public class Instagram4j implements Serializable {
      */
     public <T> T sendRequest(InstagramRequest<T> request) throws ClientProtocolException, IOException {
         
-        log.info("Sending request: " + request.getClass().getName());
+        log.info(">>>>>>Sending request: " + request.getClass().getName());
 
         if (!this.isLoggedIn
                 && request.requiresLogin()) {
@@ -276,11 +276,10 @@ public class Instagram4j implements Serializable {
         
         // wait to simulate real human interaction
         randomWait();
-        
         request.setApi(this);
         T response = request.execute();
         
-        log.debug("Result for " + request.getClass().getName() + ": " + response);
+        log.debug("<<<< Result for " + request.getClass().getName() + ": " + response);
         
         return response;
     }
@@ -301,6 +300,9 @@ public class Instagram4j implements Serializable {
     
     @SneakyThrows
     private void randomWait() {
-        Thread.sleep(MyNumberUtils.randomLongBetween(100, 250));
+        long waitTime = MyNumberUtils.randomLongBetween(10, 500);
+        log.info("---------wait time is " + waitTime  + " for" + this.username);
+        Thread.sleep(waitTime);
+
     }
 }

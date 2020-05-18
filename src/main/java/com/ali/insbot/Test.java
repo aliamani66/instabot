@@ -19,50 +19,58 @@ import java.util.*;
         private static Map<String,String> users= new HashMap<>();
 
         public static void main(String[] args) throws IOException {
-            users.put("alitest5", "aliamani");
-            users.put("shoghlyabi","qweszxc@1");
+            users.put("donyaedastsaze", "3307874");
+            /*users.put("shoghlyabi","qweszxc@1");
             users.put("abzar.foroshi","qweszxc");
             users.put("arayesh.jigh","qweszxc");
-            users.put("omde.forosh","qweszxc");
+            users.put("omde.forosh","qweszxc");*/
             List<Instagram4j> instagrams = new ArrayList<>();
 
-            List<UserSendRequest> sendersReques = new ArrayList<>();
+            List<UserSendRequest> sendersRequestUsers = new ArrayList<>();
             for (String user : users.keySet()) {
                 Instagram4j instagram = Instagram4j.builder().username(user).password(users.get(user)).build();
                 instagram.setup();
                 instagram.login();
                 instagrams.add(instagram);
                 UserSendRequest userSendRequest = new UserSendRequest(user ,instagram);
-                sendersReques.add(userSendRequest);
+                sendersRequestUsers.add(userSendRequest);
             }
 
-            InstagramSearchUsernameResult userResult = instagrams.get(0).sendRequest(new InstagramSearchUsernameRequest("havashi_clip1"));
-            System.out.println("ID for aria_cosmetic is " + userResult.getUser().getPk());
-            System.out.println("Number of followers: " + userResult.getUser().getFollower_count());
-            InstagramGetUserFollowersResult githubFollowers =
-                    instagrams.get(0).sendRequest(new InstagramGetUserFollowersRequest(userResult.getUser().getPk()));
+            InstagramSearchUsernameResult targetPageForFollowers = instagrams.get(0).sendRequest(new InstagramSearchUsernameRequest("javaherdozi.needle"));
+            System.out.println("ID for aria_cosmetic is " + targetPageForFollowers.getUser().getPk());
+            System.out.println("Number of followers: " + targetPageForFollowers.getUser().getFollower_count());
+            InstagramGetUserFollowersResult targetPageFollowers =
+                    instagrams.get(0).sendRequest(new InstagramGetUserFollowersRequest(targetPageForFollowers.getUser().getPk()));
             long count=0;
 
-            while(count < userResult.getUser().getFollower_count()) {
+            while(count < targetPageForFollowers.getUser().getFollower_count()) {
 
-               List<InstagramUserSummary> users = githubFollowers.getUsers();
-               System.out.println(users.size());
-               for (InstagramUserSummary user : users) {
-                   System.out.println(count + " = User " + user.getUsername() + " follows me!");
+               List<InstagramUserSummary> targetPageFollowerUsers = targetPageFollowers.getUsers();
+               System.out.println(targetPageFollowerUsers.size());
+               for (InstagramUserSummary followersUsersuser : targetPageFollowerUsers) {
+                   System.out.println(count + " = User " + followersUsersuser.getUsername() + " follows me!");
 
-                   for (UserSendRequest sender : sendersReques){
-                       sender.addRequestForRun(new InstagramFollowRequest(user.getPk()));
+                   for (UserSendRequest sender : sendersRequestUsers){
+                       sender.addRequestForRun(new InstagramFollowRequest(followersUsersuser.getPk()));
                    }
                    count+=1;
 
+/*
                    if(count == 1000){
-                       for (UserSendRequest sender : sendersReques){
+                       for (UserSendRequest sender : sendersRequestUsers){
                            Thread thread = new Thread(sender);
                            thread.start();
                        }
                    }
+*/
+
                }
-               githubFollowers = instagrams.get(0).sendRequest(new InstagramGetUserFollowersRequest(userResult.getUser().getPk(), githubFollowers.getNext_max_id()));
+               targetPageFollowers = instagrams.get(0).sendRequest(new InstagramGetUserFollowersRequest(targetPageForFollowers.getUser().getPk(), targetPageFollowers.getNext_max_id()));
+            }
+
+            for (UserSendRequest sender : sendersRequestUsers){
+                Thread thread = new Thread(sender);
+                thread.start();
             }
         }
 
